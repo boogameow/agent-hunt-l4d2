@@ -3,7 +3,7 @@ Modified version of ABM (https://gitlab.com/vbgunz/ABM). Cvars are the exact sam
 
 When you die, you become an SI. This works in any mode.
 On section clear or fail, everyone is back to being a survivor.
-If you get defibbed or rescued you return to being a survivor (albeit usually not the exact one).
+If you get defibbed or rescued you change back to a survivor.
 
 Release includes L4DHooks, which are needed for this to work.
 Drag everything inside the zip to the left4dead2 folder.
