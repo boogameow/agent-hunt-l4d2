@@ -163,7 +163,7 @@ public void OnPluginStart() {
     ConVar RescueMinDeadTime = FindConVar("rescue_min_dead_time");
 	ConVar ZSpawnSafety = FindConVar("z_spawn_safety_range");
 
-	SetConVarInt(RescueMinDeadTime, 180);
+	SetConVarInt(RescueMinDeadTime, 300);
 	SetConVarInt(ZSpawnSafety, 200);
     // END OF BOOGAMEOW MODIFIED
 
@@ -1555,7 +1555,7 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
 
                         default: {
                             SwitchTeam(client, 1);
-                            SpecTimer[client] = CreateTimer(8.0 + (4.0 * CountTeamMates(3, 1)), OnSpecTimer, client);
+                            SpecTimer[client] = CreateTimer(15.0, OnSpecTimer, client);
                         }
                     }
                 }
