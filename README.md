@@ -9,3 +9,6 @@ Release includes L4DHooks, which are needed for this to work.
 Drag everything inside the zip to the left4dead2 folder.
 
 Make sure you have SourceMod installed correctly.
+
+# Known Issues
+- Being defibbed or rescued correctly switches you back to survivor team, but as a random character.
