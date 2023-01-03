@@ -160,11 +160,25 @@ public void OnPluginStart() {
     HookEvent("survivor_rescued", OnSurvivorBackToLife);
 	HookEvent("defibrillator_used", OnSurvivorBackToLife);
 
-    ConVar RescueMinDeadTime = FindConVar("rescue_min_dead_time");
+    ConVar RescueDistance = FindConVar("rescue_distance");
 	ConVar ZSpawnSafety = FindConVar("z_spawn_safety_range");
 
-	SetConVarInt(RescueMinDeadTime, 300);
+    ConVar ChargerLimit = FindConVar("z_charger_limit");
+    ConVar SmokerLimit = FindConVar("z_smoker_limit");
+    ConVar JockeyLimit = FindConVar("z_jockey_limit");
+    ConVar HunterLimit = FindConVar("z_hunter_limit");
+    ConVar SpitterLimit = FindConVar("z_spitter_limit");
+    ConVar BoomerLimit = FindConVar("z_boomer_limit");
+
+	SetConVarInt(RescueDistance, 999999999);
 	SetConVarInt(ZSpawnSafety, 200);
+
+    SetConVarInt(ChargerLimit, 8);
+    SetConVarInt(SmokerLimit, 8);
+    SetConVarInt(JockeyLimit, 8);
+    SetConVarInt(HunterLimit, 8);
+    SetConVarInt(SpitterLimit, 8);
+    SetConVarInt(BoomerLimit, 8);
     // END OF BOOGAMEOW MODIFIED
 
     HookEvent("player_first_spawn", OnSpawnHook);
@@ -501,7 +515,7 @@ public void OnAllSpawnHook(Handle event, const char[] name, bool dontBroadcast) 
 public void RoundStartHook(Handle event, const char[] name, bool dontBroadcast) {
     Echo(2, "RoundStartHook: %s", name);
     //StartAD();
-    
+
     for(int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && !IsFakeClient(i)){
 			SwitchTeam(i, 2); // Switch all players to survivors on start.
@@ -1573,7 +1587,7 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
             }
 
             case 2: {
-                
+
 
                 SwitchTeam(client, 3); // Switch player to infected on death.
 
