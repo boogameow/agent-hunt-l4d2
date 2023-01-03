@@ -262,7 +262,7 @@ public void OnPluginStart() {
     AddCommandListener(CmdIntercept, "z_spawn_old");
     AddCommandListener(CmdIntercept, "z_add");
     AutoExecConfig(true, "abm");
-    StartAD();
+    //StartAD();
 }
 
 void SetupCvar(Handle &cvHandle, char[] name, char[] value, char[] details) {
@@ -395,10 +395,11 @@ void PlayerActivate(int client) {
 
     if (GetQRecord(client)) {
         g_QRecord.SetString("model", "", true);
-        StartAD();
+
+        //StartAD();
 
         if (!g_IsVs && g_onteam == 3) {
-            SwitchTeam(client, 3);
+            SwitchTeam(client, 2);
         }
     }
 }
@@ -499,7 +500,7 @@ public void OnAllSpawnHook(Handle event, const char[] name, bool dontBroadcast) 
 
 public void RoundStartHook(Handle event, const char[] name, bool dontBroadcast) {
     Echo(2, "RoundStartHook: %s", name);
-    StartAD();
+    //StartAD();
     
     for(int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && !IsFakeClient(i)){
@@ -1523,6 +1524,7 @@ public Action OnSpawnHookTimer(Handle timer, any target) {
 }
 
 public Action OnSpecTimer(Handle timer, int client) {
+    SwitchTeam(client, 1);
     SwitchTeam(client, 3);
     return Plugin_Stop;
 }
@@ -1554,7 +1556,6 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
                         }
 
                         default: {
-                            SwitchTeam(client, 1);
                             SpecTimer[client] = CreateTimer(15.0, OnSpecTimer, client);
                         }
                     }
