@@ -162,13 +162,9 @@ public void OnPluginStart() {
 
     ConVar RescueMinDeadTime = FindConVar("rescue_min_dead_time");
 	ConVar ZSpawnSafety = FindConVar("z_spawn_safety_range");
-	ConVar MaxTeamSwitches = FindConVar("vs_max_team_switches");
-	ConVar RestrictTeamChange = FindConVar("z_restrict_team_change");
 
 	SetConVarInt(RescueMinDeadTime, 180);
 	SetConVarInt(ZSpawnSafety, 200);
-	SetConVarInt(MaxTeamSwitches, 0);
-	SetConVarInt(RestrictTeamChange, 1);
     // END OF BOOGAMEOW MODIFIED
 
     HookEvent("player_first_spawn", OnSpawnHook);
