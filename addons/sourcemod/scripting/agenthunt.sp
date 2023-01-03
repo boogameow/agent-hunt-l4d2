@@ -1535,6 +1535,16 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
     int userid = GetEventInt(event, "userid");
     int client = GetClientOfUserId(userid);
 
+    char newbotid[8];
+    IntToString(userid, newbotid, sizeof(newbotid));
+
+    int userid2;
+    ClientChar.GetValue(newbotid, userid2);
+
+    if (userid2) {
+        client = GetClientOfUserId(userid2);
+    }
+
     if (GetQRecord(client)) {
         GetClientAbsOrigin(client, g_origin);
         g_QRecord.SetValue("target", client, true);
@@ -1563,6 +1573,8 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
             }
 
             case 2: {
+                
+
                 SwitchTeam(client, 3); // Switch player to infected on death.
 
                 switch (g_OfferTakeover) {
@@ -1661,8 +1673,10 @@ public void QAfkHook(Handle event, const char[] name, bool dontBroadcast) {
 public void QBakHook(Handle event, const char[] name, bool dontBroadcast) {
     Echo(2, "QBakHook: %s", name);
 
+    int botid = GetEventInt(event, "bot");
+
     int client = GetClientOfUserId(GetEventInt(event, "player"));
-    int target = GetClientOfUserId(GetEventInt(event, "bot"));
+    int target = GetClientOfUserId(botid);
 
     if (GetQRecord(client)) {
         if (g_target != target) {
@@ -1674,6 +1688,11 @@ public void QBakHook(Handle event, const char[] name, bool dontBroadcast) {
             AssignModel(client, g_model, g_IdentityFix);
         }
     }
+
+    char newbotid[8];
+    IntToString(botid, newbotid, sizeof(newbotid));
+
+    ClientChar.Remove(newbotid);
 }
 
 // ================================================================== //
