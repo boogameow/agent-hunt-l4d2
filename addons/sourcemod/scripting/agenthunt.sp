@@ -34,7 +34,7 @@ StringMap ClientChar;
 Handle SpecTimer[MAXPLAYERS+1];
 // END OF BOOGAMEOW MODIFICATIONS
 
-#define PLUGIN_VERSION "0.1.95"
+#define PLUGIN_VERSION "1.1"
 #define LOGFILE "addons/sourcemod/logs/abm.log"  // TODO change this to DATE/SERVER FORMAT?
 
 Handle g_GameData = null;
