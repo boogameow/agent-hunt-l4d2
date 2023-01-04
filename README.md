@@ -13,5 +13,5 @@ Drag everything inside the zip to the left4dead2 folder.
 Make sure you have SourceMod installed correctly.
 
 # Known Issues
-- Being defibbed or rescued correctly switches you back to survivor team, but as a random character.
+- Being defibbed or rescued correctly switches you back to survivor team, but as a random character. (Maybe can do something with specifying target in Takeover on SwitchTeam?)
 - Sometimes while playing as SI you will be randomly switched to a different one.
