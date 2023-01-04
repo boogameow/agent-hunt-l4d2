@@ -35,7 +35,7 @@ Handle SpecTimer[MAXPLAYERS+1];
 bool playerSpawn = false;
 // END OF BOOGAMEOW MODIFICATIONS
 
-#define PLUGIN_VERSION "1.13"
+#define PLUGIN_VERSION "1.14"
 #define LOGFILE "addons/sourcemod/logs/abm.log"  // TODO change this to DATE/SERVER FORMAT?
 
 Handle g_GameData = null;
@@ -538,6 +538,7 @@ public void OnAllSpawnHook(Handle event, const char[] name, bool dontBroadcast) 
 
 public void RoundStartHook(Handle event, const char[] name, bool dontBroadcast) {
     Echo(2, "RoundStartHook: %s", name);
+    ClientChar.Clear();
     //StartAD();
 
     for(int i = 1; i <= MaxClients; i++) {
