@@ -32,10 +32,9 @@ Free Software Foundation, Inc.
 // BOOGAMEOW MODIFICATIONS
 StringMap ClientChar;
 Handle SpecTimer[MAXPLAYERS+1];
-bool playerSpawn = false;
 // END OF BOOGAMEOW MODIFICATIONS
 
-#define PLUGIN_VERSION "1.14"
+#define PLUGIN_VERSION "1.2"
 #define LOGFILE "addons/sourcemod/logs/abm.log"  // TODO change this to DATE/SERVER FORMAT?
 
 Handle g_GameData = null;
@@ -162,6 +161,7 @@ public void OnPluginStart() {
 	HookEvent("defibrillator_used", OnSurvivorBackToLife);
 
 	ConVar ZSpawnSafety = FindConVar("z_spawn_safety_range");
+    ConVar RescueRange = FindConVar("rescue_spawn_range");
 
     ConVar ChargerLimit = FindConVar("z_charger_limit");
     ConVar SmokerLimit = FindConVar("z_smoker_limit");
@@ -171,6 +171,7 @@ public void OnPluginStart() {
     ConVar BoomerLimit = FindConVar("z_boomer_limit");
 
 	SetConVarInt(ZSpawnSafety, 20);
+    SetConVarInt(RescueRange, 0);
 
     SetConVarInt(ChargerLimit, 8);
     SetConVarInt(SmokerLimit, 8);
@@ -502,24 +503,6 @@ public Action LifeCheckTimer(Handle timer, int target) {
     }
 }
 
-public Action DisableRescueTimer(Handle timer) {
-    playerSpawn = false;
-
-    // Remove Closets
-    int entity = CreateEntityByName("logic_script");
-    DispatchSpawn(entity);
-
-    char sTemp[256];
-    Format(sTemp, sizeof(sTemp), "DirectorOptions <-\
-    {\
-        cm_NoRescueClosets = 1\
-    }");
-
-    SetVariantString(sTemp);
-    AcceptEntityInput(entity, "RunScriptCode");
-    RemoveEntity(entity);
-}
-
 public void OnAllSpawnHook(Handle event, const char[] name, bool dontBroadcast) {
     Echo(2, "OnAllSpawnHook: %s", name);
 
@@ -528,11 +511,6 @@ public void OnAllSpawnHook(Handle event, const char[] name, bool dontBroadcast) 
 
     if (IsClientValid(client)) {
         CreateTimer(0.5, LifeCheckTimer, client);
-    }
-
-    if (playerSpawn == false) {
-        CreateTimer(1, DisableRescueTimer);
-        playerSpawn = true;
     }
 }
 
