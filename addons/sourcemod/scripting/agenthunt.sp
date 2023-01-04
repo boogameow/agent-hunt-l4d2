@@ -34,7 +34,7 @@ StringMap ClientChar;
 Handle SpecTimer[MAXPLAYERS+1];
 // END OF BOOGAMEOW MODIFICATIONS
 
-#define PLUGIN_VERSION "1.11"
+#define PLUGIN_VERSION "1.12"
 #define LOGFILE "addons/sourcemod/logs/abm.log"  // TODO change this to DATE/SERVER FORMAT?
 
 Handle g_GameData = null;
@@ -160,7 +160,6 @@ public void OnPluginStart() {
     HookEvent("survivor_rescued", OnSurvivorBackToLife);
 	HookEvent("defibrillator_used", OnSurvivorBackToLife);
 
-    ConVar RescueDistance = FindConVar("rescue_distance");
 	ConVar ZSpawnSafety = FindConVar("z_spawn_safety_range");
 
     ConVar ChargerLimit = FindConVar("z_charger_limit");
@@ -170,7 +169,6 @@ public void OnPluginStart() {
     ConVar SpitterLimit = FindConVar("z_spitter_limit");
     ConVar BoomerLimit = FindConVar("z_boomer_limit");
 
-	SetConVarInt(RescueDistance, 999999999);
 	SetConVarInt(ZSpawnSafety, 200);
 
     SetConVarInt(ChargerLimit, 8);
