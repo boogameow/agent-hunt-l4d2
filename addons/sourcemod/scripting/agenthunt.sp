@@ -1558,7 +1558,7 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
     int userid2;
     ClientChar.GetValue(newbotid, userid2);
 
-    if (userid2) {
+    if (userid2 && GetClientOfUserId(userid2)) {
         client = GetClientOfUserId(userid2);
     }
 
@@ -1708,8 +1708,6 @@ public void QBakHook(Handle event, const char[] name, bool dontBroadcast) {
 
     char newbotid[8];
     IntToString(botid, newbotid, sizeof(newbotid));
-
-    ClientChar.Remove(newbotid);
 }
 
 // ================================================================== //
