@@ -1042,7 +1042,10 @@ public void GoIdleHook(Handle event, const char[] name, bool dontBroadcast) {
     if (GetQRecord(client)) {
         switch (g_onteam) {
             case 2: GoIdle(client);
-            case 3: SwitchTeam(client, 3);
+            case 3: {
+                PrintToChatAll("WHAT");
+                SwitchTeam(client, 3);
+            }
         }
     }
 }
@@ -1552,6 +1555,7 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
     int userid = GetEventInt(event, "userid");
     int client = GetClientOfUserId(userid);
 
+    /*
     char newbotid[8];
     IntToString(userid, newbotid, sizeof(newbotid));
 
@@ -1560,7 +1564,7 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
 
     if (userid2) {
         client = GetClientOfUserId(userid2);
-    }
+    }*/
 
     if (GetQRecord(client)) {
         GetClientAbsOrigin(client, g_origin);
@@ -1590,6 +1594,7 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
             }
 
             case 2: {
+                PrintToChatAll("deadswitch");
                 SwitchTeam(client, 3); // Switch player to infected on death.
 
                 switch (g_OfferTakeover) {
