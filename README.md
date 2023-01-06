@@ -14,4 +14,4 @@ Make sure you have SourceMod installed correctly.
 
 # Known Issues
 - Being defibbed or rescued correctly switches you back to survivor team, but as a random character. (Maybe can do something with specifying target in Takeover on SwitchTeam?)
-- Sometimes while playing as SI you will be randomly switched to a different one.
+- Sometimes while playing as SI you will be randomly switched to a different one. I believe this is just due to how the director and campaign works.
