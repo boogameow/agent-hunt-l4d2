@@ -34,7 +34,7 @@ StringMap ClientChar;
 Handle SpecTimer[MAXPLAYERS+1];
 // END OF BOOGAMEOW MODIFICATIONS
 
-#define PLUGIN_VERSION "1.2"
+#define PLUGIN_VERSION "1.21"
 #define LOGFILE "addons/sourcemod/logs/abm.log"  // TODO change this to DATE/SERVER FORMAT?
 
 Handle g_GameData = null;
@@ -1042,10 +1042,7 @@ public void GoIdleHook(Handle event, const char[] name, bool dontBroadcast) {
     if (GetQRecord(client)) {
         switch (g_onteam) {
             case 2: GoIdle(client);
-            case 3: {
-                PrintToChatAll("WHAT");
-                SwitchTeam(client, 3);
-            }
+            case 3: SwitchTeam(client, 3);
         }
     }
 }
@@ -1594,7 +1591,6 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
             }
 
             case 2: {
-                PrintToChatAll("deadswitch");
                 SwitchTeam(client, 3); // Switch player to infected on death.
 
                 switch (g_OfferTakeover) {
