@@ -1558,7 +1558,7 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
     int userid2;
     ClientChar.GetValue(newbotid, userid2);
 
-    if (userid2 && GetClientOfUserId(userid2)) {
+    if (userid2) {
         client = GetClientOfUserId(userid2);
     }
 
@@ -1590,8 +1590,6 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
             }
 
             case 2: {
-
-
                 SwitchTeam(client, 3); // Switch player to infected on death.
 
                 switch (g_OfferTakeover) {
