@@ -25,12 +25,10 @@ public OnPluginStart()
 	HookEvent("player_death", OnDeathHook, EventHookMode_Pre);
 	HookEvent("survivor_rescued", OnSurvivorBackToLife);
 	HookEvent("defibrillator_used", OnSurvivorBackToLife);
-
-	HookEvent("player_activate", PlayerActivate, EventHookMode_Pre);
-    HookEvent("player_connect", PlayerActivate, EventHookMode_Pre);
-
 	HookEvent("player_bot_replace", AFKHook);
-	HookEvent("mission_lost", RoundLostHook);
+
+    HookEvent("mission_lost", RoundEndHook);
+    HookEvent("map_transition", RoundTransitionHook, EventHookMode_Pre);
 }
 
 // Helpers
@@ -72,23 +70,20 @@ public void OnSurvivorBackToLife(Handle event, const char[] name, bool dontBroad
 	SwitchTeam(client, 2);
 }
 
-public void RoundLostHook(Handle event, const char[] name, bool dontBroadcast) {
+public void RoundEndHook(Handle event, const char[] name, bool dontBroadcast) {
     for(int i = 1; i <= MaxClients; i++) {
-		if (!IsFakeClient(i)){
-			SwitchTeam(i, 3); // Switch all players to infected on fail.
-		}
+		SwitchTeam(i, 3); // Switch all players to infected on fail.
 	}
 
 	ClientMap.Clear();
 }
 
-public void PlayerActivate(Handle event, const char[] name, bool dontBroadcast) {
-    int userid = GetEventInt(event, "userid");
-    int client = GetClientOfUserId(userid);
-
-	if (GetClientTeam(client) != 2) {
-		SwitchTeam(client, 2);
+public void RoundTransitionHook(Handle event, const char[] name, bool dontBroadcast) {
+    for(int i = 1; i <= MaxClients; i++) {
+		SwitchTeam(i, 2); // Switch all players to survivors on success.
 	}
+
+	ClientMap.Clear();
 }
 
 public void AFKHook(Handle event, const char[] name, bool dontBroadcast) {
@@ -105,9 +100,7 @@ public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
     int userid = GetEventInt(event, "userid");
     int client = GetClientOfUserId(userid);
 
-	if (GetClientTeam(client) == 2) {
-		SwitchTeam(client, 3);
-	}
+	SwitchTeam(client, 3);
 }
 
 // Main
