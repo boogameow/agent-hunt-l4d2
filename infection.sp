@@ -1,4 +1,4 @@
-#define PLUGIN_VERSION "1.3"
+#define PLUGIN_VERSION "1.31"
 #pragma semicolon 1
 
 #include <sourcemod>
@@ -25,6 +25,9 @@ public OnPluginStart()
 	HookEvent("player_death", OnDeathHook, EventHookMode_Pre);
 	HookEvent("survivor_rescued", OnSurvivorBackToLife);
 	HookEvent("defibrillator_used", OnSurvivorBackToLife);
+
+	HookEvent("player_activate", PlayerActivate, EventHookMode_Pre);
+    HookEvent("player_connect", PlayerActivate, EventHookMode_Pre);
 
 	HookEvent("player_bot_replace", AFKHook);
 	HookEvent("mission_lost", RoundLostHook);
@@ -77,6 +80,15 @@ public void RoundLostHook(Handle event, const char[] name, bool dontBroadcast) {
 	}
 
 	ClientMap.Clear();
+}
+
+public void PlayerActivate(Handle event, const char[] name, bool dontBroadcast) {
+    int userid = GetEventInt(event, "userid");
+    int client = GetClientOfUserId(userid);
+
+	if (GetClientTeam(client) != 2) {
+		SwitchTeam(client, 2);
+	}
 }
 
 public void AFKHook(Handle event, const char[] name, bool dontBroadcast) {
