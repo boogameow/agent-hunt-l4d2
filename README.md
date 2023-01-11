@@ -1,4 +1,4 @@
-# Agent Hunt (L4D2)
+# Infection (L4D2)
 Modified version of L4DSwitchPlayers.
 
 When you die, you become an SI.  
@@ -6,7 +6,7 @@ Every round or when you get defibbed, you're back to the survivor team.
 Rescue closets are disabled. 
 
 ## Installation
-Download [agenthunt.smx](https://github.com/boogameow/agent-hunt-l4d2/raw/main/agenthunt.smx) and place it into the Plugins folder in Sourcemod.  
+Download [infection.smx](https://github.com/boogameow/agent-hunt-l4d2/raw/main/infection.smx) and place it into the Plugins folder in Sourcemod.  
 Then, make sure you're subscribed to [the mod](https://steamcommunity.com/sharedfiles/filedetails/?id=2916244996) on Steam Workshop.  
 Hosting a local server on Campaign (including Mutations), Realism, or Survival is compatible. 
 

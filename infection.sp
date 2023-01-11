@@ -9,11 +9,11 @@ StringMap ClientMap;
 
 public Plugin:myinfo = 
 {
-    name = "Agent Hunt",
+    name = "Infection",
     author = "boogameow",
-    description = "You die, you're one of them. Modified version of L4DSwitchPlayers.",
+    description = "You die in co-op modes, you're infected.",
     version = PLUGIN_VERSION,
-    url = "https://github.com/boogameow/agent-hunt-l4d2"
+    url = "https://github.com/boogameow/infection-l4d2"
 }
 
 public OnPluginStart()
