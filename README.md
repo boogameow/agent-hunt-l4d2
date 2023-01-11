@@ -7,7 +7,9 @@ Rescue closets are disabled.
 
 Download [agenthunt.smx](https://github.com/boogameow/agent-hunt-l4d2/raw/main/agenthunt.smx) and place it into the Plugins folder in Sourcemod.  
 Then, make sure you're subscribed to [the mod](https://steamcommunity.com/sharedfiles/filedetails/?id=2916244996) on Steam Workshop.  
-Hosting a local server on Campaign (including Mutations), Realism, or Survival is compatible. May do some funky things if hosting Versus.  
+Hosting a local server on Campaign (including Mutations), Realism, or Survival is compatible. 
+
+May do some funky things if hosting Versus.  
 
 # Known Issue(s)
 - Being defibbed or rescued correctly switches you back to survivor team, but as a random character.
