@@ -20,14 +20,6 @@ public OnPluginStart()
 {
 	ClientMap = new StringMap();
 
-	// CVars
-
-	ConVar ZSpawnSafety = FindConVar("z_spawn_safety_range");
-	ConVar RescueRange = FindConVar("rescue_spawn_range");
-
-	SetConVarInt(ZSpawnSafety, 20);
-	SetConVarInt(RescueRange, 0);
-
 	// Hooks
 
 	HookEvent("player_death", OnDeathHook, EventHookMode_Pre);
