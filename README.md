@@ -13,4 +13,4 @@ Hosting a local server on Campaign (including Mutations), Realism, or Survival i
 May do some funky things if hosting Versus.  
 
 ## Known Issue(s)
-- Being defibbed or rescued correctly switches you back to survivor team, but as a random character.
+- Being defibbed switches you to the survivor team but as a random character.
