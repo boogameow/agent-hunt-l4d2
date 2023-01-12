@@ -2,7 +2,7 @@
 Modified version of L4DSwitchPlayers.
 
 When you die, you become an SI.  
-Every round or when you get defibbed / rescued, you're back to the survivor team.  
+After every round or when you get defibbed / rescued, you're back to the survivor team.  
 Rescue closets take longer to appear (1 minute -> 3 minutes).
 
 ## Installation
@@ -13,4 +13,4 @@ Hosting a local server on Campaign (including Mutations), Realism, or Survival i
 May do some funky things if hosting Versus.  
 
 ## Known Issue(s)
-- Being defibbed switches you to the survivor team but as a random character.
+- None! :)

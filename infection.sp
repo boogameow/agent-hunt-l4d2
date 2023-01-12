@@ -1,4 +1,4 @@
-#define PLUGIN_VERSION "1.31"
+#define PLUGIN_VERSION "1.32"
 #pragma semicolon 1
 
 #include <sourcemod>
@@ -54,6 +54,12 @@ public void OnSurvivorBackToLife(Handle event, const char[] name, bool dontBroad
 		}
 	}
 
+	int botclient = GetClientOfUserId(botid);
+
+	if (!botclient) {
+		return;
+	}
+
 	char newbotid[8];
 	IntToString(botid, newbotid, sizeof(newbotid));
 
@@ -67,7 +73,10 @@ public void OnSurvivorBackToLife(Handle event, const char[] name, bool dontBroad
 	int client = GetClientOfUserId(userid);
 	ClientMap.Remove(newbotid);
 
-	SwitchTeam(client, 2);
+	char botname[16];
+	GetClientName(botclient, botname, sizeof(botname));
+
+	FakeClientCommand(client, "%s %s %s", "jointeam", "2", botname);
 }
 
 public void RoundEndHook(Handle event, const char[] name, bool dontBroadcast) {
