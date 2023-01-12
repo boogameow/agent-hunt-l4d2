@@ -2,8 +2,8 @@
 Modified version of L4DSwitchPlayers.
 
 When you die, you become an SI.  
-Every round or when you get defibbed, you're back to the survivor team.  
-Rescue closets are disabled. 
+Every round or when you get defibbed / rescued, you're back to the survivor team.  
+Rescue closets take longer to appear (1 minute -> 3 minutes).
 
 ## Installation
 Download [infection.smx](https://github.com/boogameow/agent-hunt-l4d2/raw/main/infection.smx) and place it into the Plugins folder in Sourcemod.  
