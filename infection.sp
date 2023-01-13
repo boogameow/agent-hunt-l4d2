@@ -1,4 +1,4 @@
-#define PLUGIN_VERSION "1.32"
+#define PLUGIN_VERSION "1.33"
 #pragma semicolon 1
 
 #include <sourcemod>
@@ -6,6 +6,12 @@
 #include <sdktools_functions>
 
 StringMap ClientMap;
+
+// ConVars
+
+ConVar TankDamage;
+ConVar TankHealth;
+ConVar ZDifficulty; char ZDifficulty_Char[16];
 
 public Plugin:myinfo = 
 {
@@ -29,6 +35,16 @@ public OnPluginStart()
 
     HookEvent("mission_lost", RoundEndHook);
     HookEvent("map_transition", RoundTransitionHook, EventHookMode_Pre);
+
+	HookEvent("difficulty_changed", OnDifficultyChange);
+
+	// ConVars
+	TankDamage = FindConVar("vs_tank_damage");
+	TankHealth = FindConVar("z_tank_health");
+	ZDifficulty = FindConVar("z_difficulty");
+
+	GetConVarString(ZDifficulty, ZDifficulty_Char, sizeof(ZDifficulty_Char));
+	SetDifficultyCvars();
 }
 
 // Helpers
@@ -39,6 +55,24 @@ stock bool:IsValidPlayerIndex(clientid) {
 
 stock bool:IsValidPlayer(clientid) {
 	return (IsClientInGame(clientid) && IsClientConnected(clientid) && !IsFakeClient(clientid)); 
+}
+
+// Function
+
+public void SetDifficultyCvars() {
+	if (StrEqual(ZDifficulty_Char, "Easy")) {
+		SetConVarInt(TankDamage, 12);
+		SetConVarInt(TankHealth, 3000);
+	} else if (StrEqual(ZDifficulty_Char, "Normal")) {
+		SetConVarInt(TankDamage, 24);
+		SetConVarInt(TankHealth, 4000);
+	} else if (StrEqual(ZDifficulty_Char, "Hard")) {
+		SetConVarInt(TankDamage, 33);
+		SetConVarInt(TankHealth, 8000);
+	} else if (StrEqual(ZDifficulty_Char, "Impossible")) {
+		SetConVarInt(TankDamage, 150);
+		SetConVarInt(TankHealth, 8000);
+	}
 }
 
 // Event Hooks
@@ -77,6 +111,16 @@ public void OnSurvivorBackToLife(Handle event, const char[] name, bool dontBroad
 	GetClientName(botclient, botname, sizeof(botname));
 
 	FakeClientCommand(client, "%s %s %s", "jointeam", "2", botname);
+}
+
+public void OnDifficultyChange(Handle event, const char[] name, bool dontBroadcast) {
+	GetEventString(event, "strDifficulty", ZDifficulty_Char, sizeof(ZDifficulty_Char));
+
+	if (!ZDifficulty_Char) {
+		return;
+	}
+
+	SetDifficultyCvars();
 }
 
 public void RoundEndHook(Handle event, const char[] name, bool dontBroadcast) {
