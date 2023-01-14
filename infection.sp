@@ -1,17 +1,21 @@
-#define PLUGIN_VERSION "1.33"
+#define PLUGIN_VERSION "1.4"
 #pragma semicolon 1
 
 #include <sourcemod>
 #include <sdktools>
 #include <sdktools_functions>
 
-StringMap ClientMap;
+StringMap BotMap;
+// StringMap BotNameMap;
+
+static const float NullOrigin[3];
 
 // ConVars
 
 ConVar TankDamage;
 ConVar TankHealth;
 ConVar ZDifficulty; char ZDifficulty_Char[16];
+ConVar MaxSI;
 
 public Plugin:myinfo = 
 {
@@ -24,7 +28,8 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	ClientMap = new StringMap();
+	BotMap = new StringMap();
+	// BotNameMap = new StringMap();
 
 	// Hooks
 
@@ -33,14 +38,13 @@ public OnPluginStart()
 	HookEvent("defibrillator_used", OnSurvivorBackToLife);
 	HookEvent("player_bot_replace", AFKHook);
 
-    HookEvent("mission_lost", RoundEndHook);
-    HookEvent("map_transition", RoundTransitionHook, EventHookMode_Pre);
-
+	HookEvent("round_start_post_nav", RoundStartHook, EventHookMode_Post);
 	HookEvent("difficulty_changed", OnDifficultyChange);
 
 	// ConVars
 	TankDamage = FindConVar("vs_tank_damage");
 	TankHealth = FindConVar("z_tank_health");
+	MaxSI = FindConVar("z_max_player_zombies");
 	ZDifficulty = FindConVar("z_difficulty");
 
 	GetConVarString(ZDifficulty, ZDifficulty_Char, sizeof(ZDifficulty_Char));
@@ -57,9 +61,9 @@ stock bool:IsValidPlayer(clientid) {
 	return (IsClientInGame(clientid) && IsClientConnected(clientid) && !IsFakeClient(clientid)); 
 }
 
-// Function
+// Functions
 
-public void SetDifficultyCvars() {
+void SetDifficultyCvars() {
 	if (StrEqual(ZDifficulty_Char, "Easy")) {
 		SetConVarInt(TankDamage, 12);
 		SetConVarInt(TankHealth, 3000);
@@ -75,7 +79,47 @@ public void SetDifficultyCvars() {
 	}
 }
 
-// Event Hooks
+void SetPlayerSI(int PlayerSI) {
+	if (PlayerSI < 2) {
+		SetConVarInt(MaxSI, 2); // Default amount of SI.
+	} else {
+		SetConVarInt(MaxSI, PlayerSI);
+	}
+}
+
+// Difficulty CVars
+
+public void OnDifficultyChange(Handle event, const char[] name, bool dontBroadcast) {
+	GetEventString(event, "strDifficulty", ZDifficulty_Char, sizeof(ZDifficulty_Char));
+
+	if (!ZDifficulty_Char) {
+		return;
+	}
+
+	SetDifficultyCvars();
+}
+
+// Player connection
+
+/*
+public OnClientDisconnected(Client) {
+	char ClientString[8];
+	IntToString(Client, ClientString, sizeof(ClientString));
+
+	BotNameMap.Remove(ClientString);
+}*/
+
+// Round
+
+public void RoundStartHook(Handle event, const char[] name, bool dontBroadcast) {
+	for(int i = 1; i <= MaxClients; i++) {
+		SwitchTeam(i, 2); // Switch all players to survivors.
+	}
+
+	BotMap.Clear();
+}
+
+// Switch on Death and Revival
 
 public void OnSurvivorBackToLife(Handle event, const char[] name, bool dontBroadcast) {
 	int botid = GetEventInt(event, "subject"); // defibbed
@@ -98,74 +142,99 @@ public void OnSurvivorBackToLife(Handle event, const char[] name, bool dontBroad
 	IntToString(botid, newbotid, sizeof(newbotid));
 
 	int userid;
-	ClientMap.GetValue(newbotid, userid);
+	BotMap.GetValue(newbotid, userid);
 
 	if (!userid) {
 		return;
 	}
 
 	int client = GetClientOfUserId(userid);
-	ClientMap.Remove(newbotid);
+	BotMap.Remove(newbotid);
 
 	char botname[16];
 	GetClientName(botclient, botname, sizeof(botname));
 
-	FakeClientCommand(client, "%s %s %s", "jointeam", "2", botname);
-}
-
-public void OnDifficultyChange(Handle event, const char[] name, bool dontBroadcast) {
-	GetEventString(event, "strDifficulty", ZDifficulty_Char, sizeof(ZDifficulty_Char));
-
-	if (!ZDifficulty_Char) {
-		return;
-	}
-
-	SetDifficultyCvars();
-}
-
-public void RoundEndHook(Handle event, const char[] name, bool dontBroadcast) {
-    for(int i = 1; i <= MaxClients; i++) {
-		SwitchTeam(i, 3); // Switch all players to infected on fail.
-	}
-
-	ClientMap.Clear();
-}
-
-public void RoundTransitionHook(Handle event, const char[] name, bool dontBroadcast) {
-    for(int i = 1; i <= MaxClients; i++) {
-		SwitchTeam(i, 2); // Switch all players to survivors on success.
-	}
-
-	ClientMap.Clear();
+	SwitchTeam(client, 2, botname);
 }
 
 public void AFKHook(Handle event, const char[] name, bool dontBroadcast) {
-    int userid = GetEventInt(event, "player");
-	int botid = GetEventInt(event, "bot");
+	int UserId = GetEventInt(event, "player");
+	int BotId = GetEventInt(event, "bot");
 
-	char newbotid[8];
-	IntToString(botid, newbotid, sizeof(newbotid));
+	char StringBotId[8];
+	IntToString(BotId, StringBotId, sizeof(StringBotId));
 
-	ClientMap.SetValue(newbotid, userid);
+	BotMap.SetValue(StringBotId, UserId);
+
+	/*
+	int BotClient = GetClientOfUserId(BotId);
+	int Client = GetClientOfUserId(UserId);
+
+	if (!BotClient || !Client) {
+		PrintToChatAll("No exist apparently");
+		return;
+	}
+
+	char BotName[16];
+	GetClientName(BotClient, BotName, sizeof(BotName));
+
+	char StringClient[8];
+	IntToString(Client, StringClient, sizeof(StringClient));
+
+	BotNameMap.SetString(StringClient, BotName);
+	PrintToChatAll("AFK: %s", BotName);
+	*/
 }
 
 public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
-    int userid = GetEventInt(event, "userid");
-    int client = GetClientOfUserId(userid);
-
-	SwitchTeam(client, 3);
+	int Client = GetClientOfUserId(GetEventInt(event, "userid"));
+	SwitchTeam(Client, 3);
 }
 
 // Main
 
-public void SwitchTeam(client, team) {
-	if (!IsValidPlayerIndex(client)) {
+void SwitchTeam(int Client, int Team, char Bot[16]="") {
+	if (!IsValidPlayerIndex(Client)) {
 		return;
-	} else if (!IsValidPlayer(client)) {
-		return;
-	} else if (GetClientTeam(client) == team) {
+	} else if (!IsValidPlayer(Client)) {
 		return;
 	}
 
-	ChangeClientTeam(client, team);
+	int ClientTeam = GetClientTeam(Client);
+
+	if (ClientTeam == Team) {
+		return;
+	}
+
+	int PlayerSI = GetTeamClientCount(3);
+
+	if (ClientTeam == 3) {
+		TeleportEntity(Client, NullOrigin, NULL_VECTOR, NULL_VECTOR);
+		PlayerSI -= 1;
+	} else if (Team == 3) {
+		PlayerSI += 1;
+	}
+
+	/*
+	if (Team == 2 && StrEqual(Bot, "")) {
+		char StringClient[8];
+		IntToString(Client, StringClient, sizeof(StringClient));
+
+		BotNameMap.GetString(StringClient, Bot, sizeof(Bot));
+		PrintToChatAll("Got %s", Bot);
+
+		if (!Bot) {
+			PrintToChatAll("Foiled");
+			Bot = "";
+		}
+	}
+	*/
+
+	char TeamString[8];
+	IntToString(Team, TeamString, sizeof(TeamString));
+
+	SetPlayerSI(PlayerSI);
+
+	ChangeClientTeam(Client, 0);
+	FakeClientCommand(Client, "jointeam %s %s", TeamString, Bot);
 }
