@@ -1,4 +1,4 @@
-#define PLUGIN_VERSION "1.4"
+#define PLUGIN_VERSION "1.41"
 #pragma semicolon 1
 
 #include <sourcemod>
@@ -234,7 +234,10 @@ void SwitchTeam(int Client, int Team, char Bot[16]="") {
 	IntToString(Team, TeamString, sizeof(TeamString));
 
 	SetPlayerSI(PlayerSI);
-
 	ChangeClientTeam(Client, 0);
-	FakeClientCommand(Client, "jointeam %s %s", TeamString, Bot);
+
+	do {
+		FakeClientCommand(Client, "jointeam %s %s", TeamString, Bot);
+	}
+	while (GetClientTeam(Client) != Team);
 }
