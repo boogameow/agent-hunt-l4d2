@@ -6,9 +6,6 @@
 #include <sdktools_functions>
 
 StringMap BotMap;
-// StringMap BotNameMap;
-
-static const float NullOrigin[3];
 
 // ConVars
 
@@ -29,7 +26,6 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
 	BotMap = new StringMap();
-	// BotNameMap = new StringMap();
 
 	// Hooks
 
@@ -38,7 +34,9 @@ public OnPluginStart()
 	HookEvent("defibrillator_used", OnSurvivorBackToLife);
 	HookEvent("player_bot_replace", AFKHook);
 
-	HookEvent("round_start_post_nav", RoundStartHook, EventHookMode_Post);
+	HookEvent("mission_lost", RoundEndHook);
+    HookEvent("map_transition", RoundTransitionHook, EventHookMode_Pre);
+
 	HookEvent("difficulty_changed", OnDifficultyChange);
 
 	// ConVars
@@ -99,21 +97,19 @@ public void OnDifficultyChange(Handle event, const char[] name, bool dontBroadca
 	SetDifficultyCvars();
 }
 
-// Player connection
-
-/*
-public OnClientDisconnected(Client) {
-	char ClientString[8];
-	IntToString(Client, ClientString, sizeof(ClientString));
-
-	BotNameMap.Remove(ClientString);
-}*/
-
 // Round
 
-public void RoundStartHook(Handle event, const char[] name, bool dontBroadcast) {
-	for(int i = 1; i <= MaxClients; i++) {
-		SwitchTeam(i, 2); // Switch all players to survivors.
+public void RoundEndHook(Handle event, const char[] name, bool dontBroadcast) {
+    for(int i = 1; i <= MaxClients; i++) {
+		SwitchTeam(i, 3); // Switch all players to infected on fail.
+	}
+
+	BotMap.Clear();
+}
+
+public void RoundTransitionHook(Handle event, const char[] name, bool dontBroadcast) {
+    for(int i = 1; i <= MaxClients; i++) {
+		SwitchTeam(i, 2); // Switch all players to survivors on success.
 	}
 
 	BotMap.Clear();
@@ -165,25 +161,6 @@ public void AFKHook(Handle event, const char[] name, bool dontBroadcast) {
 	IntToString(BotId, StringBotId, sizeof(StringBotId));
 
 	BotMap.SetValue(StringBotId, UserId);
-
-	/*
-	int BotClient = GetClientOfUserId(BotId);
-	int Client = GetClientOfUserId(UserId);
-
-	if (!BotClient || !Client) {
-		PrintToChatAll("No exist apparently");
-		return;
-	}
-
-	char BotName[16];
-	GetClientName(BotClient, BotName, sizeof(BotName));
-
-	char StringClient[8];
-	IntToString(Client, StringClient, sizeof(StringClient));
-
-	BotNameMap.SetString(StringClient, BotName);
-	PrintToChatAll("AFK: %s", BotName);
-	*/
 }
 
 public void OnDeathHook(Handle event, const char[] name, bool dontBroadcast) {
@@ -209,38 +186,19 @@ void SwitchTeam(int Client, int Team, char Bot[16]="") {
 	int PlayerSI = GetTeamClientCount(3);
 
 	if (ClientTeam == 3) {
-		TeleportEntity(Client, NullOrigin, NULL_VECTOR, NULL_VECTOR);
 		PlayerSI -= 1;
 	} else if (Team == 3) {
 		PlayerSI += 1;
 	}
 
-	/*
-	if (Team == 2 && StrEqual(Bot, "")) {
-		char StringClient[8];
-		IntToString(Client, StringClient, sizeof(StringClient));
-
-		BotNameMap.GetString(StringClient, Bot, sizeof(Bot));
-		PrintToChatAll("Got %s", Bot);
-
-		if (!Bot) {
-			PrintToChatAll("Foiled");
-			Bot = "";
-		}
-	}
-	*/
-
 	char TeamString[8];
 	IntToString(Team, TeamString, sizeof(TeamString));
 
 	SetPlayerSI(PlayerSI);
-	ChangeClientTeam(Client, 0); 
 	
 	if (StrEqual(Bot, "")) {
-		PrintToChatAll("good");
 		ChangeClientTeam(Client, Team);
 	} else {
-		PrintToChatAll("bad");
 		FakeClientCommand(Client, "jointeam %s %s", TeamString, Bot);
 	}
 }
