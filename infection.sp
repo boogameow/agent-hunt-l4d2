@@ -234,11 +234,11 @@ void SwitchTeam(int Client, int Team, char Bot[16]="") {
 	IntToString(Team, TeamString, sizeof(TeamString));
 
 	SetPlayerSI(PlayerSI);
+	ChangeClientTeam(Client, 0);
 
-	if (!StrEqual(Bot, "")) {
+	if (StrEqual(Bot, "")) {
 		ChangeClientTeam(Client, Team);
 	} else {
-		ChangeClientTeam(Client, 0);
 		FakeClientCommand(Client, "jointeam %s %s", TeamString, Bot);
 	}
 }
