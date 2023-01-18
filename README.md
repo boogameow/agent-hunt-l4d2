@@ -12,4 +12,4 @@ May do some funky things if hosting Versus.
 
 ## Known Issue(s)
 - After a round, you may not be the same survivor you were previously.
-- Steam workshop mod is under analysis because of the github link to here.
+- Voting to restart campaign will put everyone on the opposite team.
